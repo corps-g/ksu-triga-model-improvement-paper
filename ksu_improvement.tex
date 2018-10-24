@@ -1,9 +1,11 @@
 \documentclass[review]{elsarticle}
 
 \usepackage{lineno,hyperref}
+\usepackage{xcolor} 
+
 \modulolinenumbers[5]
 
-\journal{Journal of \LaTeX\ Templates}
+\journal{Annals of Nuclear Energy}
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %% Elsevier bibliography styles
@@ -35,6 +37,7 @@
 
 %% `Elsevier LaTeX' style
 \bibliographystyle{elsarticle-num}
+\graphicspath{{./figures/}}
 %%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -53,111 +56,180 @@
 
 
 \begin{abstract}
-A computational model for the TRIGA reactor at Kansas State University has been developed using three 
-different simulation tools, MCNP6, Serpent2 and SCALE6.2
-Also, In addition to the modeling part, all the reactor data including the different core configurations, initial fuel loading information and data recorded in the log books since 1973 are documented.
+A computational model for the TRIGA reactor at Kansas State University(KSU) has been developed using three 
+different Monte-Carlo simulation tools, namely, MCNP6, Serpent2 and SCALE-6.2.
 
-Using this model and those historical data, a depletion sequence has been established throughout the 
-operational history to compute the current fuel burnups and also their compositions.
-To estimate the current compositions/burnups, two approaches were adopted and results for both are provided in the paper.
+In addition to the modeling part, all the reactor historical data including the different core configurations, initial fuel loading information and data recorded in the log books since 1973 were reviewed and digitized.
+
+Using this model and the reactor data, a depletion sequence has been established throughout the entire 
+operational history to compute the current fuel burnups and also their compositions.\\
+To estimate the current compositions/burnups, two approaches were adopted. The first approach requires running transport calculations only and information about the total energy produced while the other approach involves depletion calculations, that solves explicitly for nuclides compositions. The estimated burnups values range up to $\approx$ 49 MWD/kg. The bias between both approaches is calculated and reported in the results along with the values of the computed burnups.
 
 
 \end{abstract}
 
 \begin{keyword}
-\texttt{Triga}\sep MCNP6\sep Scale \sep Burnup
+\texttt{TRIGA}\sep Monte Carlo simulation \sep Burnup 
 \MSC[2010] 00-01\sep  99-00
 \end{keyword}
-
 \end{frontmatter}
 
 \linenumbers
 
 \section{Introduction}
-Kansas State University has a TRIGA mark II reactor. The reactor was first operated in  a critical in 1962 and since then the facility served for several educational and research purposes.
+Kansas State University has a TRIGA mark II research reactor operating with a maximum power of 1250 kW. Criticality was fist achieved in 1962 and since then the facility served for several educational and research purposes.
 
-It is a pool type, moderated with light water. The reactor core consists of six concentric rings, (A, B, C, D and F). Those rings have 91 locations that could be filled with fuel and control elements or possibly a graphite element.
-The fuel is a homogeneous mixture of 20\% enriched uranium that contributes to 8.5\% of the total weight and ZrH.
+It is a pool type, light water moderated. The reactor core consists of six concentric rings, (A, B, C, D and F). Those rings have 91 locations that could be filled with fuel, control elements and possibly a graphite element.
+The fuel is a homogeneous mixture of 20\% enriched uranium, that contributes to 8.5\% of the total weight, and ZrH.
 
-In 1973, the aluminum clad fuel elements  were replaced by fuel elements with a stainless-steel cladding. Those elements had a previous burnup history and the values of their burnups are provided in the original documentation. 
-Because those burnups are calculated based on ring-averaged power estimates which is not sufficiently accurate, a preliminary study has been conducted to estimate the uncertainty associated with those burnups \cite{gairola2017estimating}.
-In this work, the burnups were estimated using two different approaches, the first one is a simplified model based on the calculation of the power peaking 
+In 1973, the aluminum clad fuel elements  were replaced by fuel elements with a stainless-steel cladding. Those elements had a previous burnup history and the values of their burnups are provided in the original shipment documentation. 
+Because those burnups are calculated based on ring-averaged power estimate, which is not sufficiently accurate, a preliminary study has been conducted to estimate the uncertainty associated with those burnups \cite{gairola2017estimating}. Using those computed uncertainties, an investigatory study was conducted to propagate them to the current compositions uncertainties through a developed surrogate model using Dynamic Mode Decomposition \cite{recent paper}.
 
-This work involves a complete review and improvement of the reactor documentation including the logbooks, the core configuration and the initial fuel loading information.
-Also, a fully scripted 3D computational model was developed. Three monte-carlo simulation tools were used to build the model, namely MCNP6, Serpent 2 and KENO under SCALE-6.2.
-Using this model and the reviewed documentation, a depletion sequence has been established, starting from first configuration in 1973 to the current configuration, to estimate the current burnup value of the fuel elements. Two approaches were adopted in this sequence, the first is simply based on the element-averaged power values and the other involves depletion calculation that solves explicitly for the isotopic concentration.
-The following section gives details about the model development, followed by .........
+This work involves a complete review and improvement of the reactor documentation including the logbooks, the core configurations and the initial fuel loading information.
+Also, a fully scripted 3D computational model was developed. Three Monte Carlo simulation tools were used to build the model, namely MCNP6, Serpent 2 and KENO under SCALE-6.2.
+
+In order to estimate the current burnups of the fuel elements, the model is used along with the reviewed documentation to establish a depletion sequence starting from the first configuration in 1973 to the current configuration,  \\
+Two approaches were adopted in this sequence, the first is based on the element-averaged power values and the other involves depletion calculation that solves explicitly for the isotopic concentrations.
+The following section gives details about the model development, followed by ????
 
 
 \section{Model Development}
  
- A fully scripted 3D computational model was developed for the KSU TRIGA reactor. An object-oriented based scripts were developed using Python[ref] to build the model. These scripts contain several classes responsible for creating the dimensions, geometry, material library,etc. 
+ A fully scripted 3D computational model was developed for the KSU TRIGA reactor. An object-oriented based scripts were written using Python[ref] to develop the model. These scripts contain several classes that are responsible for defining the dimensions, geometry and material library. \\
+ Also, there is a class for each simulation code involved, i.e MCNP, Serpent and SCALE, that is responsible for writing an input file for the model using the specific code syntax.
  
- For the material library PyNE [reference] was used to define the isotopic compositions of each material included in the model.
- On the top of all those scripts, there is `manager' module that creates and runs the model input file and also processes the output. 
- The model allows dividing the fuel elements up to 40 axial, 25 radial, and 10 azimuthal segments.
- Based on the user choice, the model is capable of creating input files for either MCNP6, Serpent-2 or KENO. Also, there is a calculation `mode' option in which the user can choose between running the model with transport calculation only or performing burnup calculation which solves explicitly for the time dependent compositions.
+ For the material library, PyNE \cite{bates2014pyne} was used to define the isotopic compositions of each material included in the model.\\
+ On top of all those scripts, there is \emph{manager} module that reads the user inputs and accordingly automates writing and running the model input file and also processing the output.\\
+ The model offers some flexibility in respect to the spatial resolution of the fuel elements since it allows dividing the fuel elements up to 40 axial, 25 radial, and 10 azimuthal segments.
+ Based on the user choice, the model is capable of creating input files for either MCNP6, Serpent-2 or KENO. Also, there is a \emph{calculation mode} option in which the user can choose between running the model with transport calculation only or performing burnup calculation which gives the time dependent compositions.\\
+ In case of burnup mode, the T6-DEPL sequence is used if SCALE model is selected. In case of MCNP and Serpent, the necessary cards for performing burnup calculation are automatically added. \\
+ In both modes, the user should specify a value for the power to be used for the fission source estimation for in the first option while in the later, it is necessary for computing the flux under which the fuel elements are to be depleted.
  
- In case of burnup mode, the `T6-DEPL` sequence is used in case SCALE model is selected. In case of MCNP and Serpent, the necessary cards for performing burnup calculation are added. 
+ Also, in the later option, the user must define the irradiation time which can be one or more intervals and optionally a list of isotopes to be tracked throughout the calculation otherwise there is a list of 62 default isotopes that can be used.
  
- In both options the user should specify a power that is used for the fission source estimation in the first option while for the later option, it is necessary for computing the flux under which the fuel elements are to depleted.
+ Regarding the geometrical part, the reactor operational manual and the original design drawings were consulted to accurately define the dimensions and the geometrical structure.\\  The model is designed so that it allows for different geometrical levels or extensions. For now, we have two geometrical levels, the first level is to model a single fuel element -fresh or depleted- in a square-pitch cell filled with water as shown in fig. \ref{fig:sigle_element_model}, while the second models the full core up to the water surrounding the outer graphite reflector as shown in fig.\ref{fig:full_core_model}.
  
- Also, in the later option, the user must define the irradiation time which can be one or more interval and optionally a list of isotopes to be tracked throughout the calculation otherwise there is list of default isotopes that can be used.
+ The first level is set to support some quick and preliminary studies and it has already been used in an exploratory study to build a surrogate model that predicts the isotropic composition of a TRIGA fuel element \cite{abdo2018dds}, \cite{elzohery2018cbg}.\\
+ Also, this level is used for generating composition table or library as a function of the burnup. The main purpose of this library is to compute the compositions of any fuel element  given its burnup value through linear interpolating.
+
+ In order to verify that the three models used the defined dimensions, geometry and materials in a consistent way, we ran two test cases in which a transport calculation is performed and the table $k_{eff}$ are computed, one for a fresh single element and its results are given in \ref{single_rsults_keff} while the other for a full core and its results are given in table \ref{full_core_results_keff} \\.
+ The comparison show that the three models are consistent if the same cross section library is used. Currently, Serpent model uses only ENDF-7.0 data.
  
- As for the geometry part, the model is set so that there are different geometrical levels or extensions. For now, we have two geometrical levels, the first one is to model a single fuel element is a square pitch cell filled with water while the second one is the full core up to the outer water surrounding the graphite reflector.
+ %%%%%%%% model figures
+
+ \begin{figure}[h]
+ 	\centering
+ 	\includegraphics[scale=0.5]{single_element.jpg}\\
+ 	\caption{Single element model}
+ 	\label{fig:sigle_element_model}
+ 	\end{figure}
  
- The first level is set to support some quick and preliminary studies and it has already been used in some exploratory studies to build a surrogate model that predicts the isotropic composition of a Triga fuel element \ref{abdo2018dds}, \ref{elzohery2018cbg}
+ \begin{figure}[h]
+ 	\centering
+ 	\includegraphics[scale=0.7]{full_core.jpg}\\
+ 	\caption{Full core model}
+ 	\label{fig:full_core_model}
+ \end{figure}
  
- More development and extension of the model are still undergoing. A graphical user interface is supposed to be completed soon which can easily be used by the reactor staff.
  
- Also, the scale model can be extended to support some uncertainties and sensitivities studies using TSUNAMI and SAMPLER sequences.
+ %%%%%% keff tables 
+ \begin{table}[h]
+ 	\centering
+ 	\caption{Single element results}
+ 	\label{single_rsults_keff}
+ 	\begin{tabular}{c c c c }
+ 		\hline
+ 		Model & $K_{eff}$ & Thermal Flux ($<$0.625 ev)& Fast Flux\\
+ 		\hline
+ 		KENO (ENDF-7.1)& 1.3203 $\pm$ 0.00023&  $5.267 \times 10^{12}$  & $1.224 \times 10^{13}$ \\
+ 		KENO (ENDF-7.0) & 1.30673 $\pm$ 0.00022&  $5.218 \times 10^{12}$  & $1.219 \times 10^{13}$ \\
+ 		MCNP (ENDF-7.1)& 1.32011 $\pm$ 0.0002 &  $5.284 \times 10^{12}$ & $1.222 \times 10^{13}$ \\
+ 		Serpent (ENDF-7.0) &1.30631 $\pm$ 0.00024&  $5.231 \times 10 ^{12}$  & $1.218 \times 10 ^{13}$\\
+ 	\end{tabular}
+ \end{table}
  
- Currently, the model is being used for core optimization study and it is expected to serve for more studies in the future.
+  \begin{table}[h]
+  	\caption{Full core results}
+  	\label{full_core_results_keff}
+  	\begin{tabular}{c c c c }
+  		\hline
+  		Model & $K_{eff}$ & Thermal Flux ($<$0.625 ev)& Fast Flux \\
+  		\hline
+  		Scale (ENDF-7.1)& 1.03808 $\pm$  0.000362&  $5.409 \times 10^{10}$ & $1.255\times 10^{11}  $ \\
+  		MCNP (ENDF-7.1)& 1.03734   $\pm$ 0.00022 &  $5.428 \times 10^{10}$ & $1.252\times 10^{11}$\\
+  		Serpent(ENDF-7.0) & 1.02707  $\pm$  0.00036  & $5.374\times 10^{10}$ & $1.250\times 10^{11}$\\
+  	\end{tabular}
+  \end{table}
+  
+ More development and extensions of the model are still undergoing. A graphical user interface(GUI) of the model is supposed to be completed soon which can easily be used by the reactor staff.
+ 
+ Also, the SCALE model can be extended to support some uncertainty and sensitivity studies using TSUNAMI and SAMPLER sequences which will help in identifying the source of bias in the calculated $k_{eff}$.
+ 
+ Currently, the model is being used for core optimization study which takes advantage of the model flexibility that allows for modeling any core arrangement provided by the user with fuel elements compositions corresponding to any burnup values up tp 55 MWD/kg. The model is expected to serve for more studies in the future.
  
 \section{Reactor Data Documentation Review}
-The reactor documentation involves the logbook data, previous core configurations and the initial fuel loading information.
-Each one of those documentations represents an important piece required for estimating the current fuel isotopic composition.
+The reactor documentations involve the logbook data, core configurations and the initial fuel loading information.
+Each one of those documentations represents an important piece required for estimating the current fuel isotopic compositions.
 
-The logbook data includes information about the power history recorded since the reactor first operated. the information includes the startup time, power, operator name, control position, ..etc
-A number of undergraduate students at k-state university worked on digitizing those records and ended up with have one `json' formatted file that contains the data recorded in the logbooks since 1962.
+The logbook data includes information about the power history recorded since the reactor first operated. The information includes the startup time, operating power, operator name, control position, temperature, etc.
+A number of undergraduate students at Kansas state university worked on reviewing and digitizing those records and ended up with have one \emph{json} formatted file that contains the data recorded in the logbooks since 1962. 
 
-For the core configurations, up to now there are 28 configurations each of which has different core loading pattern. The documentations including those configuration were reviewed and also digitized in a format that can be used by the model.
+Figure \ref{fig:core3_power} shows the time dependent power of one configuration based on the data recorded in the logbooks
 
-Finally, we reviewed the original documents listing the fuel elements back to 1973 and the ones received in 1985 and 1995. Those documents list every fuel element by its serial number along with its enrichment, uranium weight and burnup in u235 gram unit. Also, all the data were compiled and stored in one `json' file.
-In fact having all the data in such format was a considerable help in automating the depletion sequence discussed in the next section.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.8]{core3.png}\\
+	\caption{Time dependent power}
+	\label{fig:core3_power}
+\end{figure}
+
+
+For the core configurations, there are 28 configurations, each of which has different core loading pattern. The documentations including those configuration were reviewed and also digitized in a format that can easily be used by the model.
+Figure \ref{fig:coreii1_config} shows an example of one of the configurations and also its total energy produced calculated from the data recorded in the logbooks. The numbers inside fuel locations represent the serial number of this fuel element.
+
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{coreii1.pdf}\\
+	\caption{Core configuration example}
+	\label{fig:coreii1_config}
+\end{figure}
+
+Finally, we reviewed the original shipment documents listing the fuel elements back to 1973 and the ones received in 1985 and 1995. Those documents list every fuel element by its serial number along with its enrichment, uranium weight and burnup value. Also, all the data were compiled and stored in one \emph{json} file.\\
+In fact having all the data in such format was very helpful in establishing and automating the depletion sequence discussed in the next section.
+
 
 \section{Depletion Sequence}
 
 One major goal of having a computational model for the KSU Triga reactor is to estimate the current composition and burnups of all the fuel elements. To achieve this goal a depletion sequence that marches those compositions forward in time has been established starting form august 1973 to June 2017.
-A separate class named `DepletionSequence' has been implemented to automate running the sequence. Simply, this class loops over all the configurations given by the user and after each configuration, it updates the compositions of the fuel elements to be used as the initial compositions for the next configuration and so on. 
-As described above, the model can do both transport and burnup calculations. Based on this, two approaches for computing the compositions are implemented. The first approach requires running only a transport calculation and in this case, the fuel elements burnup values at the end of each configuration are computed based on the power peaking factor of each element and the total energy produced. Using this estimated burnup value, the corresponding compositions are
+A separate class named \emph{DepletionSequence} has been implemented to automate running the sequence. 
+
+Simply, this class loops over all the configurations given by the user, and after running each each configuration, it updates the compositions of the fuel elements to be used as the initial compositions for the next configuration and so on.
+
+As described above, the model can do both transport and burnup calculations. Based on this, two approaches for computing the compositions are implemented.\\
+ The first approach requires running a transport calculation and in this case, the fuel elements burnups at the end of each configuration can be computed as core-averaged, ring-averaged or element-averaged value based on the computed power peaking factors and the total energy produced in the given configuration. \\
+Using this estimated burnup value, the corresponding compositions are
 computed by linear interpolating from a pre-generated table that contains the compositions as
-a function of the burnup (up to ≈ 55 Mwd/kg) and the initial uranium mass. Those depletion
-tables are generated using a class named ‘CompositionGenerator’ that is responsible for computing
-the compositions of any fuel given its information i.e, enrichment, initial uranium mass
-content, current burnup value, hydrogen to zirconium ratio, etc.
-In the second approach, the depletion calculation is performed by solving for the nuclide densities. For example, in SCALE model, the sequence T6-DEPL is used in which ORIGEN module is
-invoked to handle nuclide evolution while KENO does the transport calculation. Also, for MCNP
-and Serpent the necessary cards for performing depletion calculation are added to both models
-formats. In this approach, the compositions are extracted directly from the output files. Once the
-compositions at the end of each configuration are produced and processed, they are stored in a
-‘json’ formatted file and are used as initial compositions for the next configuration and so on until
-the current compositions are computed.
-To run this depletion sequence, the user provides a list of names of the text files that contain the different cores arrangements and geometry and for each configuration, the associated power and
-irradation time have to be specified too. The model is designed so that it has the ability to do a
-depletion calculation for each configuration given either the total time averaged core power or the
-time dependent power history of the configuration, which allows for better accuracy.
+a function of the burnup (up to ≈ 55 Mwd/kg) and the initial uranium mass.
+Those depletion tables are generated using a class named \emph{CompositionGenerator} that is responsible for computing the compositions of any fuel given its information i.e, enrichment, initial uranium mass content, current burnup value, hydrogen to zirconium ratio, etc.
+
+In the second approach, a depletion calculation is performed which solves for the nuclide densities explicitly. For example, in SCALE model, the sequence T6-DEPL is used in which ORIGEN module is invoked to handle nuclide evolution while KENO does the transport calculation.
+Also, for MCNP and Serpent the necessary cards for performing depletion calculation are added to both models. In this approach, the compositions are extracted directly from the output files. \\
+Once the compositions at the end of each configuration are produced and processed, they are stored in a \emph{json} file and which is used to define the initial compositions of the next configuration and so on until the current compositions are computed.\\
+To run this depletion sequence, the user should provide a list of names of the text files that contain the different cores arrangements and geometry and for each configuration, the associated power and irradation time have to be specified too. The model is designed so that it has the ability to do a depletion calculation for each configuration given either the total time averaged core power or the time dependent power history of the configuration, which allows for better accuracy.
+
 
 \section{Burnups estimations}
- Based on the depletion sequence discussed above, an estimation of the current burnups is done where the fuel element is treated as one axial segment.
- In case of the simplified approach that uses transport calculation only, the current burnups of the fuel elements are computed directly at the end of the last configuration.
-  However, in the other case where depletion calculations are performed, the energy produced by each fuel element had to be computed after each configuration and then its final accumulated burnup is computed based on the total energy produced over all the configuration and its initial uranium mass as provided in the original documentation.
+ Based on the depletion sequence discussed above, an estimation of the current burnups is done where the fuel element meat is treated as one axial segment.
+ In case of the simplified scheme that requires transport calculation, the current burnups of the fuel elements are generated automatically in a text file at the end of the last configuration.\\
+  However, in the other case where depletion calculations are performed, the energy produced by each fuel element had to be computed after each configuration and then its final accumulated burnup is computed based on the total energy it produced over all the configuration and its initial uranium mass as provided in the original documentation.
   
-  The estimated burnups have values that range from about 0.3 to 49 Mwd/Kg. The burnups computed using SCALE and Serpent for the two approaches are given in table .... in appendix ...
-  It was found that the maximum bias between the two approaches is 3.5 \% and 4.1\% for serpent and SCALE respectively, while the maximum bias between SCALE and Serpent for the depletion-calculated burnup is 1.39\%.
+  The estimated burnups have values that range from about 0.3 to 49 Mwd/KgU. The burnups computed using SCALE and Serpent for the two approaches are given in table .... in appendix ...
+  It was found that the maximum bias between the two approaches is 3.5 \% and 4.1\% for serpent and SCALE respectively, while the maximum bias between SCALE and Serpent for the depletion-calculated burnup is 1.39\%.\\
+  The results show that the simplified scheme can be used as a computationally cheap alternative to the real depletion calculation, which is much more costly, for burnup estimation but to a certain degree of accuracy.
   
-  Also, using serpent a comparison study has been done to see the effect of fuel element spatial resolution on the the estimated burnup values. So, the fuel material was divided into seven equal axial segments and again the burnups were computed using the aforementioned approaches. 
-  The maximum bias in the estimated burnup was 0.77\%. The values of the burnups values for the seven axial segment case are given in table ... in appendix ....
+  Also, using serpent a comparison study has been done to see the effect of the fuel element spatial resolution on the estimated burnup values. This takes into account the spatial variation of the neutron flux and hence the burnup, so the fuel material was divided into seven equal axial segments and again the burnups were computed using the two aforementioned approaches. 
+  The maximum bias in the estimated burnup was 0.77\%. the burnups values using seven axial segment are given in table ... in appendix ....\\ 
+  \textcolor{red}{(not sure if a study of the bias in keff is needed)}
   
  
 \section{Conclusion}
