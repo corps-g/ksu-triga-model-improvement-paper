@@ -1,1 +1,1 @@
-# Ksu-triga-model-improvment-paper
+# ksu-triga-model-improvement-paper
