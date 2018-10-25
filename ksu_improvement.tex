@@ -158,7 +158,7 @@
 	
 	Using this model and the reactor data, a depletion sequence has been established throughout the entire 
 	operational history to compute the current fuel burnups and also their compositions.\\
-	To estimate the current compositions and burnups, two approaches were adopted. The first approach requires running transport calculations only and information about the total energy produced, while the other approach involves depletion calculations, that solves explicitly for nuclides compositions. The estimated burnups values range up to $\approx$ 49 MWd/kg. The bias between both approaches is calculated and reported in the results along with the values of the computed burnups.
+	To estimate the current compositions and burnups, two approaches were adopted. The first approach requires running transport calculations only and information about the total energy produced, while the other approach involves depletion calculation, that solves explicitly for the nuclides compositions. The estimated burnups values range up to $\approx$ 49 MWd/kg. The bias between both approaches is calculated and reported in the results along with the values of the computed burnups.
 	
 	
 \end{abstract}
@@ -209,9 +209,8 @@ The first level is set to support some quick and preliminary studies and it has 
 Also, this level is used for generating composition table or library as a function of the burnup. The main purpose of this library is to compute the compositions of any fuel element  given its burnup value through linear interpolating.
 
 In order to verify that the three models used the defined dimensions, geometry and materials in a consistent way, we ran two test cases in which a transport calculation is performed and the value of $k_{eff}$ is computed. 
-The first test is for a fresh single element and its results are given in table \ref{single_rsults_keff} while the other for a full core and its results are given in table \ref{full_core_results_keff} \\.
+The first test is for a fresh single element and its results are given in table \ref{single_rsults_keff} while the other is for a full core and its results are given in table \ref{full_core_results_keff}.\\
 The comparison shows that the three models are consistent if the same cross section library is used. Currently, Serpent model uses only ENDF-7.0 data.\\
-
 %%%%%%%% model figures
 
 \begin{figure}[h]
@@ -268,10 +267,9 @@ Currently, the model is being used for core optimization study which takes advan
 The reactor documentations involve the logbooks data, core configurations and the initial fuel loading information.
 Each one of those documentations represents an important piece required for estimating the current fuel isotopic compositions.
 
-The logbooks data includes information about the power history recorded since the reactor first operated. The information includes the startup time, operating power, operator name, control position, temperature, etc.
+The logbooks data includes information about the power history recorded since the reactor first operated. The information includes the startup time, operating power, control position, temperature, etc.
 A number of undergraduate students at Kansas state university worked on reviewing and digitizing those records and ended up with have one \emph{json} formatted file that contains the data recorded in the logbooks since 1962. 
-
-Figure \ref{fig:core3_power} shows the time dependent power of one configuration based on the data recorded in the logbooks
+Figure \ref{fig:core3_power} shows the time dependent power of one of the configurations based on the data recorded in the logbooks
 
 \begin{figure}[h]
 \centering
@@ -281,7 +279,7 @@ Figure \ref{fig:core3_power} shows the time dependent power of one configuration
 \end{figure}
 
 
-For the core configurations, there are 28 configurations, each of which has different core loading pattern. The documentations including those configuration were reviewed and also digitized in a format that can easily be used by the model.
+For the core configurations, there are 28 ones, each of which has different core loading pattern. The documentations including those configuration were reviewed and also digitized in a format that can easily be used by the model.
 Figure \ref{fig:coreii1_config} shows an example of one of the configurations and also its total energy produced calculated from the data recorded in the logbooks. The numbers inside fuel locations represent the serial number of this fuel element.
 
 \begin{figure}[htp]
@@ -321,7 +319,7 @@ However, in the other case where depletion calculations are performed, the energ
 
 The estimated burnups have values that range from about 0.3 to 49 MWd/kg. The burnups computed using SCALE and Serpent for the two approaches are given in table ?? in appendix ??.\\
 It was found that the maximum bias between the two approaches is 3.5 \% and 4.1\% for serpent and SCALE respectively, while the maximum bias between SCALE and Serpent for the depletion-calculated burnup is 1.39\%.\\
-The results show that the simplified scheme can be used as a computationally cheap alternative to the real depletion calculation, which is much more costly, for burnup estimation but to a certain degree of accuracy.
+The results suggest that the simplified scheme can be used as a computationally cheap alternative to the real depletion calculation, which is much more costly, for burnup estimation but to a certain degree of accuracy.
 
 Also, using serpent a comparison study has been done to see the effect of the fuel element spatial resolution on the estimated burnup values. This takes into account the spatial variation of the neutron flux and hence the burnup, so the fuel material was divided into seven equal axial segments and again the burnups were computed using the two aforementioned approaches. 
 The maximum bias in the estimated burnup was 0.77\%. the burnups values using seven axial segment are given in table ?? in appendix ??\\ 
